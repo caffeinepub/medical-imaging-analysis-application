@@ -1,0 +1,58 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add API configuration page with endpoint and API key settings",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Update ApiConfigDialog component to include an API key input field alongside the existing endpoint URL field, with secure password-style masking for the API key input",
+      "acceptanceCriteria": [
+        "ApiConfigDialog displays both API endpoint URL and API key input fields",
+        "API key input field uses password-style masking for security",
+        "Form validation ensures both fields are filled before allowing save",
+        "Current API key value is displayed as masked dots when loaded"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ApiConfigDialog.tsx",
+          "operation": "modify",
+          "description": "Add API key input field with type='password' for secure masking alongside the existing endpoint URL field. Include form validation to ensure both endpoint and API key are filled before allowing save. Load and display the current API key value as masked dots using the useApiConfig hook. Update the save handler to call useSaveApiConfig with both endpoint and apiKey values. Verify the authorization component's usage instructions before implementing to ensure proper admin-only access patterns."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Update useQueries.ts hooks to handle API key in configuration queries and mutations, ensuring the key is included in API requests when analyzing CT scans",
+      "acceptanceCriteria": [
+        "useApiConfig hook returns both endpoint and apiKey from backend",
+        "useSaveApiConfig mutation accepts and saves both endpoint and apiKey",
+        "useAnalyzeScan mutation includes API key in authorization headers when calling external API",
+        "Toast notifications indicate success or failure of API configuration updates"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update useApiConfig hook to fetch both endpoint URL and API key from backend using getApiEndpoint() and getApiKey() methods. Modify useSaveApiConfig mutation to accept both endpoint and apiKey parameters and call both configureApiEndpoint() and configureApiKey() backend methods. Update useAnalyzeScan mutation to include the configured API key in authorization headers when making external API requests. Ensure toast notifications provide clear feedback for configuration save success/failure and analysis errors related to missing API configuration. Use the authorization component to ensure these hooks properly handle admin-only access where required."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Modify the scan analysis logic to include the configured API key in the Authorization header when making requests to the external AI service endpoint",
+      "acceptanceCriteria": [
+        "External API requests include Authorization header with configured API key",
+        "Error handling distinguishes between missing configuration and API failures",
+        "Users receive clear feedback if API key is not configured when attempting analysis",
+        "Successfully configured API connection returns tumor detection results"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ScanDetailDialog.tsx",
+          "operation": "modify",
+          "description": "Update the analyze button handler to check if both API endpoint and API key are configured before triggering analysis. Display clear error feedback via toast if either configuration value is missing. Ensure the useAnalyzeScan mutation properly passes the API key to enable authorization headers in backend HTTP outcalls. Add error handling that distinguishes between configuration errors (missing endpoint/key) and actual API failures, providing appropriate user feedback for each case."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "kind": "build_request",
+  "title": "Add API configuration page with endpoint and API key settings",
+  "projectName": "MediScan AI",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Update ApiConfigDialog component to include an API key input field alongside the existing endpoint URL field, with secure password-style masking for the API key input",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "After uploading the scan images, I am not getting the output. How exactly can I configure API key",
+          "yes do it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "ApiConfigDialog displays both API endpoint URL and API key input fields",
+        "API key input field uses password-style masking for security",
+        "Form validation ensures both fields are filled before allowing save",
+        "Current API key value is displayed as masked dots when loaded"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Extend backend main.mo to store and retrieve API key configuration alongside the existing endpoint URL, with secure access control restricting read/write to admin users only",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "How exactly can I configure API key"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend stores API key in stable variable alongside endpoint URL",
+        "Only admin users can read or update API key configuration",
+        "API key is persisted across canister upgrades",
+        "Backend provides getApiConfig and setApiConfig methods that include both endpoint and key"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update useQueries.ts hooks to handle API key in configuration queries and mutations, ensuring the key is included in API requests when analyzing CT scans",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-10",
+          "msg-11"
+        ],
+        "quotes": [
+          "I am not getting the output",
+          "How exactly can I configure API key"
+        ]
+      },
+      "acceptanceCriteria": [
+        "useApiConfig hook returns both endpoint and apiKey from backend",
+        "useSaveApiConfig mutation accepts and saves both endpoint and apiKey",
+        "useAnalyzeScan mutation includes API key in authorization headers when calling external API",
+        "Toast notifications indicate success or failure of API configuration updates"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Modify the scan analysis logic to include the configured API key in the Authorization header when making requests to the external AI service endpoint",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-10"
+        ],
+        "quotes": [
+          "After uploading the scan images, I am not getting the output"
+        ]
+      },
+      "acceptanceCriteria": [
+        "External API requests include Authorization header with configured API key",
+        "Error handling distinguishes between missing configuration and API failures",
+        "Users receive clear feedback if API key is not configured when attempting analysis",
+        "Successfully configured API connection returns tumor detection results"
+      ]
+    }
+  ],
+  "constraints": [
+    "API key must be stored securely and only accessible to admin users",
+    "Maintain existing ApiConfigDialog UI patterns and styling",
+    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui"
+  ],
+  "nonGoals": [
+    "Implementing the actual AI tumor detection model",
+    "Changing the authentication system",
+    "Modifying the existing scan upload or visualization features",
+    "Adding encryption for API keys at rest (standard canister security applies)"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

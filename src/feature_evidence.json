@@ -1,0 +1,68 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-apiconfigdialog-component-to-include-an-api-key-input-field-alongside-the-existing-endpoint-url-field-with-secure-password-style-masking-for-the-api-key-input",
+      "featureTitle": "Update ApiConfigDialog component to include an API key input field alongside the existing endpoint URL field, with secure password-style masking for the API key input",
+      "files": [
+        "frontend/src/components/ApiConfigDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-usequeries-ts-hooks-to-handle-api-key-in-configuration-queries-and-mutations-ensuring-the-key-is-included-in-api-requests-when-analyzing-ct-scans",
+      "featureTitle": "Update useQueries.ts hooks to handle API key in configuration queries and mutations, ensuring the key is included in API requests when analyzing CT scans",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-modify-the-scan-analysis-logic-to-include-the-configured-api-key-in-the-authorization-header-when-making-requests-to-the-external-ai-service-endpoint",
+      "featureTitle": "Modify the scan analysis logic to include the configured API key in the Authorization header when making requests to the external AI service endpoint",
+      "files": [
+        "frontend/src/components/ScanDetailDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

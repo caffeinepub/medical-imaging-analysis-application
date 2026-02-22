@@ -1,2 +1,3 @@
-# medical-imaging-analysis-application
-Exported from Caffeine project: Medical Imaging Analysis Application
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

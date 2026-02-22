@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "CT scan analysis application with image upload, visualization, and external AI API integration for tumor detection",
+  "architectural_notes": [
+    "External AI API integration for CT scan tumor analysis",
+    "API requires configuration of endpoint URL and authentication key",
+    "API accepts image uploads and returns tumor coordinates and stage information",
+    "CORS must be enabled on external API for Internet Computer domain access"
+  ],
+  "known_issues": [
+    "API key configuration not yet implemented - users cannot configure external AI service connection"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-update-apiconfigdialog-component-to-include-an-api-key-input-field-alongside-the-existing-endpoint-url-field-with-secure-password-style-masking-for-the-api-key-input",
+      "title": "Update ApiConfigDialog component to include an API key input field alongside the existing endpoint URL field, with secure password-style masking for the API key input",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-usequeries-ts-hooks-to-handle-api-key-in-configuration-queries-and-mutations-ensuring-the-key-is-included-in-api-requests-when-analyzing-ct-scans",
+      "title": "Update useQueries.ts hooks to handle API key in configuration queries and mutations, ensuring the key is included in API requests when analyzing CT scans",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-modify-the-scan-analysis-logic-to-include-the-configured-api-key-in-the-authorization-header-when-making-requests-to-the-external-ai-service-endpoint",
+      "title": "Modify the scan analysis logic to include the configured API key in the Authorization header when making requests to the external AI service endpoint",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add dedicated API configuration page in UI for setting endpoint URL and API key",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Extend backend main.mo to store and retrieve API key configuration alongside the existing endpoint URL, with secure access control restricting read/write to admin users only",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectName": "MediScan AI",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
