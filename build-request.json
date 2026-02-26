@@ -1,0 +1,75 @@
+{
+  "kind": "build_request",
+  "title": "Restore API configuration changes from version 2",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Restore and apply all backend changes from version 2, including the API configuration data model and logic in the main Motoko actor (API endpoint URL and API key storage, retrieval, and admin-only access control).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "I need the changes in version 2 which includes API configuration"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The backend actor exposes functions to save and retrieve the external AI API endpoint URL and API key.",
+        "Only admin-role users can set or update the API configuration.",
+        "Non-admin users cannot access or modify API configuration values."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "I need the changes in version 2 which includes API configuration"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The Header displays an 'API Config' button visible only to admin users.",
+        "Clicking the 'API Config' button opens the ApiConfigDialog modal.",
+        "The ApiConfigDialog shows fields for the API endpoint URL and API key (password-masked).",
+        "Submitting the form with valid values saves the configuration to the backend.",
+        "Form validation prevents submission when required fields are empty.",
+        "The dialog is not visible or accessible to non-admin users."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "I need the changes in version 2 which includes API configuration"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The Footer displays only the medical disclaimer text stating AI analysis is for research and educational purposes.",
+        "No 'Made with Caffeine AI' text or attribution appears in the Footer."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not reintroduce the 'Made with Caffeine AI' footer branding that was removed in version 3.",
+    "API configuration access must remain restricted to admin-role users only."
+  ],
+  "nonGoals": [
+    "Adding new features beyond what was present in version 2's API configuration scope.",
+    "Changing the overall application design or color theme."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

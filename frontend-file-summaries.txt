@@ -1,0 +1,16 @@
+{
+  "frontend/src/App.tsx": "Main application component that handles authentication flow, profile setup, and renders the dashboard with theme provider and toast notifications, with proper type handling for userProfile prop.",
+  "frontend/src/hooks/useQueries.ts": "Custom React Query hooks for all backend operations including user profiles, CT scans, analysis, and API configuration with both endpoint and API key management, proper state management, invalidation, and enhanced error handling for missing configuration.",
+  "frontend/src/components/Header.tsx": "Application header with branding, user profile display, API configuration access for admins, and logout functionality.",
+  "frontend/src/components/Footer.tsx": "Minimal footer component displaying only the medical disclaimer text about AI-powered imaging analysis being for research and educational purposes.",
+  "frontend/src/components/LoginScreen.tsx": "Login screen with feature highlights and Internet Identity authentication.",
+  "frontend/src/components/ProfileSetup.tsx": "Profile setup form for new users to enter their name, department, and specialization.",
+  "frontend/src/components/ApiConfigDialog.tsx": "Admin-only dialog for configuring both the external AI API endpoint URL and API key with secure password-style masking for the key input field.",
+  "frontend/src/pages/Dashboard.tsx": "Main dashboard page with tabs for viewing all scans and uploading new scans.",
+  "frontend/src/components/UploadScanTab.tsx": "Upload interface for CT scans with patient ID input, file selection, and image preview.",
+  "frontend/src/components/ScansListTab.tsx": "Grid view of all uploaded CT scans with status indicators and click-to-view details.",
+  "frontend/src/components/ScanCard.tsx": "Individual scan card component displaying thumbnail, patient ID, and analysis status.",
+  "frontend/src/components/ScanDetailDialog.tsx": "Detailed view dialog showing original scan, analysis results, tumor mask overlay, and staging information with analyze button that checks for complete API configuration (both endpoint and key) before allowing analysis.",
+  "frontend/src/index.css": "Global styles with OKLCH color system including custom medical theme colors for primary, secondary, accent, success, and warning states.",
+  "frontend/tailwind.config.js": "Tailwind configuration extended with medical theme color tokens for consistent styling across the application."
+}

@@ -1,0 +1,52 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-26T03:52:59.033Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 0,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Restore and apply all backend changes from version 2, including the API configuration data model and logic in the main Motoko actor (API endpoint URL and API key storage, retrieval, and admin-only access control).",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/ApiConfigDialog.tsx",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Footer.tsx"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-implementation-plan.json",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

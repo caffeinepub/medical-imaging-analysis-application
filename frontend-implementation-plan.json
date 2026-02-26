@@ -1,0 +1,51 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Restore API configuration changes from version 2",
+  "requirements": [
+    {
+      "id": "REQ-2",
+      "summary": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
+      "acceptanceCriteria": [
+        "The Header displays an 'API Config' button visible only to admin users.",
+        "Clicking the 'API Config' button opens the ApiConfigDialog modal.",
+        "The ApiConfigDialog shows fields for the API endpoint URL and API key (password-masked).",
+        "Submitting the form with valid values saves the configuration to the backend.",
+        "Form validation prevents submission when required fields are empty.",
+        "The dialog is not visible or accessible to non-admin users."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ApiConfigDialog.tsx",
+          "operation": "modify",
+          "description": "Verify and ensure the ApiConfigDialog component provides a modal form for admin users to view and save the external AI API endpoint URL and API key. The API key input must be password-masked. Include form validation to prevent submission when required fields are empty. The component should use the useGetApiEndpoint, useGetApiKey, useConfigureApiEndpoint, and useConfigureApiKey hooks from useQueries.ts to fetch and save configuration values. Verify the authorization component's usage instructions before implementing to ensure proper admin-only access."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Add an admin-only 'API Config' button to the Header component that opens the ApiConfigDialog modal. The button should only be visible when the current user has admin role (use useIsCallerAdmin hook). Wire the button click handler to open the ApiConfigDialog state. Verify the authorization component's usage instructions before implementing to ensure proper role checking."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the useGetApiEndpoint, useGetApiKey, useConfigureApiEndpoint, and useConfigureApiKey hooks are present and properly implemented. These hooks should call the backend methods getApiEndpoint(), getApiKey(), configureApiEndpoint(endpoint), and configureApiKey(key) respectively. Add the useIsCallerAdmin hook if not present, calling isCallerAdmin() from the backend. Include proper error handling and success toast notifications for mutations."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
+      "acceptanceCriteria": [
+        "The Footer displays only the medical disclaimer text stating AI analysis is for research and educational purposes.",
+        "No 'Made with Caffeine AI' text or attribution appears in the Footer."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Footer.tsx",
+          "operation": "modify",
+          "description": "Review and confirm the Footer component displays only the medical disclaimer text ('This AI analysis tool is designed for research and educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment.') without any 'Made with Caffeine AI' branding or attribution. Remove any such branding if present."
+        }
+      ]
+    }
+  ]
+}
