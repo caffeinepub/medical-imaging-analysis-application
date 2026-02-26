@@ -1,38 +1,44 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
+  "summary": "CT scan analysis application with AI-powered tumor detection, deployed on Internet Computer. Includes API configuration for connecting to external AI model endpoints.",
+  "architectural_notes": [
+    "Deployed on Internet Computer (ICP) platform",
+    "Connects to external AI model API for CT scan analysis",
+    "API returns JSON with tumor coordinates and stage information",
+    "CT scan images sent as base64 or multipart form data",
+    "CORS must be enabled on AI API for ICP domain requests"
+  ],
   "known_issues": [],
   "isFixRequest": false,
-  "existing_features": [],
-  "new_feature_requests": [
+  "existing_features": [
     {
-      "id": "AR-1",
-      "summary": "Restore and apply all backend changes from version 2, including the API configuration data model and logic in the main Motoko actor (API endpoint URL and API key storage, retrieval, and admin-only access control).",
+      "id": "feature-implement-an-api-configuration-modal-dialog-that-allows-admins-to-set-the-external-ai-api-endpoint-url-and-api-key-the-dialog-must-include-a-semi-transparent-black-modal-overlay-a-centered-white-dialog-box-with-rounded-corners-500px-wide-a-bold-api-configuration-title-a-labeled-text-input-for-api-endpoint-url-a-labeled-password-input-for-api-key-with-character-masking-a-cancel-button-with-a-gray-outline-style-and-a-save-button-with-a-solid-blue-style-the-dialog-should-display-inline-validation-errors-for-missing-invalid-fields-and-show-a-loading-state-while-saving",
+      "title": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
       "reqIds": [
         "REQ-1"
       ],
-      "status": "pending"
-    },
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
     {
-      "id": "AR-2",
-      "summary": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
-      "reqIds": [
-        "REQ-2"
-      ],
+      "id": "AR-1",
+      "summary": "API Configuration dialog with endpoint URL and API key inputs",
+      "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
+      "summary": "Ensure the existing backend API configuration storage (endpoint URL and API key) correctly persists values saved from the new dialog and returns them when queried, so the dialog can pre-fill saved values on open.",
       "reqIds": [
-        "REQ-3"
+        "REQ-2"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Restore API configuration changes from version 2",
+  "gameProjectType": "none",
+  "projectName": "CT Scan Analysis",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -1,12 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Restore the API configuration feature from version 2 into the current codebase, while preserving the footer changes from version 3.
+**Goal:** Add an API Configuration modal dialog for admins to set and persist an external AI API endpoint URL and API key.
 
 **Planned changes:**
-- Add backend functions to save and retrieve an external AI API endpoint URL and API key, restricted to admin-role users only.
-- Add an `ApiConfigDialog` modal component with fields for the API endpoint URL and a password-masked API key input, including form validation.
-- Add an "API Config" button in the Header that is visible only to admin users and opens the `ApiConfigDialog`.
-- Ensure the Footer displays only the medical disclaimer text with no "Made with Caffeine AI" attribution.
+- Add a modal dialog with a semi-transparent black overlay and a centered white dialog box (~500px wide) titled "API Configuration" in bold
+- Include a labeled text input for "API Endpoint URL" and a labeled password input for "API Key" with character masking
+- Add a "Cancel" button (gray outline) and a "Save" button (solid blue) with a loading/disabled state during save
+- Show inline validation errors for empty or invalid fields
+- Pre-fill previously saved values when the dialog is reopened
+- Restrict dialog access to admin users only
+- Ensure the backend correctly persists and returns the API endpoint URL and API key for pre-filling
 
-**User-visible outcome:** Admin users see an "API Config" button in the header that opens a dialog to view and save the external AI API endpoint and key. Non-admin users have no access to this feature. The footer shows only the medical disclaimer.
+**User-visible outcome:** Admin users can open the API Configuration dialog, enter or update the AI API endpoint URL and API key, save the configuration, and see pre-filled values when reopening the dialog.

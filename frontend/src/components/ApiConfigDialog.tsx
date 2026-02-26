@@ -1,18 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useGetApiConfig, useSaveApiConfig } from '../hooks/useQueries';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Loader2, Server, Key } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useGetExternalApiConfig, useConfigureExternalApi } from '../hooks/useQueries';
+import { Loader2 } from 'lucide-react';
 
 interface ApiConfigDialogProps {
   open: boolean;
@@ -20,22 +8,60 @@ interface ApiConfigDialogProps {
 }
 
 export default function ApiConfigDialog({ open, onOpenChange }: ApiConfigDialogProps) {
-  const { data: apiConfig, isLoading } = useGetApiConfig();
-  const saveApiConfig = useSaveApiConfig();
-  const [endpoint, setEndpoint] = useState('');
-  const [apiKey, setApiKey] = useState('');
+  const { data: apiConfig, isLoading } = useGetExternalApiConfig();
+  const configureApi = useConfigureExternalApi();
 
+  const [endpointUrl, setEndpointUrl] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [endpointError, setEndpointError] = useState('');
+  const [apiKeyError, setApiKeyError] = useState('');
+
+  // Pre-fill fields when dialog opens or config loads
   useEffect(() => {
-    if (apiConfig) {
-      setEndpoint(apiConfig.endpoint);
+    if (open && apiConfig) {
+      setEndpointUrl(apiConfig.endpointUrl);
       setApiKey(apiConfig.apiKey);
     }
-  }, [apiConfig]);
+    if (!open) {
+      setEndpointError('');
+      setApiKeyError('');
+    }
+  }, [open, apiConfig]);
+
+  const handleEndpointChange = (value: string) => {
+    setEndpointUrl(value);
+    if (endpointError) setEndpointError('');
+  };
+
+  const handleApiKeyChange = (value: string) => {
+    setApiKey(value);
+    if (apiKeyError) setApiKeyError('');
+  };
+
+  const validate = (): boolean => {
+    let valid = true;
+    if (!endpointUrl.trim()) {
+      setEndpointError('API Endpoint URL is required.');
+      valid = false;
+    } else {
+      try {
+        new URL(endpointUrl.trim());
+      } catch {
+        setEndpointError('Please enter a valid URL (e.g. https://your-api.com/analyze).');
+        valid = false;
+      }
+    }
+    if (!apiKey.trim()) {
+      setApiKeyError('API Key is required.');
+      valid = false;
+    }
+    return valid;
+  };
 
   const handleSave = () => {
-    if (!endpoint.trim() || !apiKey.trim()) return;
-    saveApiConfig.mutate(
-      { endpoint: endpoint.trim(), apiKey: apiKey.trim() },
+    if (!validate()) return;
+    configureApi.mutate(
+      { endpointUrl: endpointUrl.trim(), apiKey: apiKey.trim() },
       {
         onSuccess: () => {
           onOpenChange(false);
@@ -44,89 +70,116 @@ export default function ApiConfigDialog({ open, onOpenChange }: ApiConfigDialogP
     );
   };
 
-  const isFormValid = endpoint.trim() && apiKey.trim();
+  const handleCancel = () => {
+    onOpenChange(false);
+  };
+
+  if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Server className="h-5 w-5 text-medical-primary" />
-            Configure AI API
-          </DialogTitle>
-          <DialogDescription>
-            Set the external AI service URL and authentication key for pancreatic tumor detection analysis.
-          </DialogDescription>
-        </DialogHeader>
+    /* Modal overlay */
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Semi-transparent black backdrop */}
+      <div
+        className="absolute inset-0 bg-black/60"
+        onClick={!configureApi.isPending ? handleCancel : undefined}
+      />
 
+      {/* Dialog box */}
+      <div className="relative z-10 w-full max-w-[500px] mx-4 rounded-xl bg-white shadow-2xl">
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4 border-b border-gray-100">
+          <h2 className="text-xl font-bold text-gray-900">API Configuration</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Configure the external AI service endpoint and authentication key for CT scan analysis.
+          </p>
+        </div>
+
+        {/* Body */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
           </div>
         ) : (
-          <div className="space-y-4 py-4">
-            <Alert>
-              <AlertDescription className="text-xs">
-                This endpoint will receive CT scan images and return tumor detection results. The API key will be
-                included in the Authorization header.
-              </AlertDescription>
-            </Alert>
-
-            <div className="space-y-2">
-              <Label htmlFor="endpoint" className="flex items-center gap-2">
-                <Server className="h-4 w-4" />
+          <div className="px-6 py-5 space-y-5">
+            {/* API Endpoint URL */}
+            <div className="space-y-1.5">
+              <label htmlFor="api-endpoint-url" className="block text-sm font-medium text-gray-700">
                 API Endpoint URL
-              </Label>
-              <Input
-                id="endpoint"
-                placeholder="https://api.example.com/analyze"
-                value={endpoint}
-                onChange={(e) => setEndpoint(e.target.value)}
+              </label>
+              <input
+                id="api-endpoint-url"
+                type="text"
+                placeholder="https://your-ai-service.com/api/analyze"
+                value={endpointUrl}
+                onChange={(e) => handleEndpointChange(e.target.value)}
+                disabled={configureApi.isPending}
+                className={`w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  endpointError ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'
+                }`}
               />
-              <p className="text-xs text-muted-foreground">
-                {apiConfig?.endpoint ? 'Current endpoint configured' : 'No endpoint configured yet'}
-              </p>
+              {endpointError && (
+                <p className="text-xs text-red-600 mt-1">{endpointError}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="apiKey" className="flex items-center gap-2">
-                <Key className="h-4 w-4" />
+            {/* API Key */}
+            <div className="space-y-1.5">
+              <label htmlFor="api-key" className="block text-sm font-medium text-gray-700">
                 API Key
-              </Label>
-              <Input
-                id="apiKey"
+              </label>
+              <input
+                id="api-key"
                 type="password"
                 placeholder="Enter your API key"
                 value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+                onChange={(e) => handleApiKeyChange(e.target.value)}
+                disabled={configureApi.isPending}
+                className={`w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  apiKeyError ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'
+                }`}
               />
-              <p className="text-xs text-muted-foreground">
-                {apiConfig?.apiKey ? 'API key is configured (hidden for security)' : 'No API key configured yet'}
-              </p>
+              {apiKeyError && (
+                <p className="text-xs text-red-600 mt-1">{apiKeyError}</p>
+              )}
             </div>
+
+            {/* Mutation error */}
+            {configureApi.isError && (
+              <p className="text-xs text-red-600">
+                {configureApi.error?.message ?? 'Failed to save configuration. Please try again.'}
+              </p>
+            )}
           </div>
         )}
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={!isFormValid || saveApiConfig.isPending}
-            className="bg-gradient-to-r from-medical-primary to-medical-secondary"
+        {/* Footer */}
+        <div className="px-6 pb-6 pt-2 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={configureApi.isPending}
+            className="px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saveApiConfig.isPending ? (
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={configureApi.isPending}
+            className="px-4 py-2 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {configureApi.isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Saving...
               </>
             ) : (
-              'Save Configuration'
+              'Save'
             )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

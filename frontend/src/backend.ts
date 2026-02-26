@@ -89,7 +89,10 @@ export class ExternalBlob {
         return this;
     }
 }
-export type ApiEndpoint = string;
+export interface ExternalApiConfig {
+    endpointUrl: string;
+    apiKey: string;
+}
 export type ScanId = bigint;
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
@@ -112,7 +115,6 @@ export interface _CaffeineStorageCreateCertificateResult {
     blob_hash: string;
 }
 export type PatientId = string;
-export type ApiKey = string;
 export interface UserProfile {
     name: string;
     specialization: string;
@@ -144,21 +146,20 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     analyzeScan(scanId: ScanId): Promise<ScanId>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    configureApiEndpoint(endpoint: ApiEndpoint): Promise<void>;
-    configureApiKey(key: ApiKey): Promise<void>;
+    configureExternalApi(config: ExternalApiConfig): Promise<void>;
     getAllScans(): Promise<Array<CTScan>>;
-    getApiEndpoint(): Promise<ApiEndpoint>;
-    getApiKey(): Promise<ApiKey>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getExternalApiConfig(): Promise<ExternalApiConfig | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     getVersion(): Promise<string>;
+    isAdmin(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     readScan(scanId: ScanId): Promise<CTScan>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     uploadScan(patientId: PatientId, scanBlob: Uint8Array): Promise<ScanId>;
 }
-import type { CTScan as _CTScan, PatientId as _PatientId, ScanId as _ScanId, TumorDetectionResult as _TumorDetectionResult, TumorStage as _TumorStage, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { CTScan as _CTScan, ExternalApiConfig as _ExternalApiConfig, PatientId as _PatientId, ScanId as _ScanId, TumorDetectionResult as _TumorDetectionResult, TumorStage as _TumorStage, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -287,31 +288,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async configureApiEndpoint(arg0: ApiEndpoint): Promise<void> {
+    async configureExternalApi(arg0: ExternalApiConfig): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.configureApiEndpoint(arg0);
+                const result = await this.actor.configureExternalApi(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.configureApiEndpoint(arg0);
-            return result;
-        }
-    }
-    async configureApiKey(arg0: ApiKey): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.configureApiKey(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.configureApiKey(arg0);
+            const result = await this.actor.configureExternalApi(arg0);
             return result;
         }
     }
@@ -327,34 +314,6 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getAllScans();
             return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getApiEndpoint(): Promise<ApiEndpoint> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getApiEndpoint();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getApiEndpoint();
-            return result;
-        }
-    }
-    async getApiKey(): Promise<ApiKey> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getApiKey();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getApiKey();
-            return result;
         }
     }
     async getCallerUserProfile(): Promise<UserProfile | null> {
@@ -385,6 +344,20 @@ export class Backend implements backendInterface {
             return from_candid_UserRole_n19(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getExternalApiConfig(): Promise<ExternalApiConfig | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getExternalApiConfig();
+                return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getExternalApiConfig();
+            return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
@@ -410,6 +383,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getVersion();
+            return result;
+        }
+    }
+    async isAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isAdmin();
             return result;
         }
     }
@@ -489,6 +476,9 @@ function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return value.length === 0 ? null : from_candid_TumorDetectionResult_n14(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ExternalApiConfig]): ExternalApiConfig | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {

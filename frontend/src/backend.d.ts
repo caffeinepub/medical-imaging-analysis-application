@@ -7,7 +7,10 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export type ApiEndpoint = string;
+export interface ExternalApiConfig {
+    endpointUrl: string;
+    apiKey: string;
+}
 export type ScanId = bigint;
 export interface TumorDetectionResult {
     probability: number;
@@ -23,7 +26,6 @@ export interface CTScan {
     scanImage: Uint8Array;
 }
 export type PatientId = string;
-export type ApiKey = string;
 export interface UserProfile {
     name: string;
     specialization: string;
@@ -44,15 +46,14 @@ export enum UserRole {
 export interface backendInterface {
     analyzeScan(scanId: ScanId): Promise<ScanId>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    configureApiEndpoint(endpoint: ApiEndpoint): Promise<void>;
-    configureApiKey(key: ApiKey): Promise<void>;
+    configureExternalApi(config: ExternalApiConfig): Promise<void>;
     getAllScans(): Promise<Array<CTScan>>;
-    getApiEndpoint(): Promise<ApiEndpoint>;
-    getApiKey(): Promise<ApiKey>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getExternalApiConfig(): Promise<ExternalApiConfig | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     getVersion(): Promise<string>;
+    isAdmin(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     readScan(scanId: ScanId): Promise<CTScan>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;

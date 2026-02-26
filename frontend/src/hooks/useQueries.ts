@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, CTScan, ScanId, PatientId, ApiEndpoint, ApiKey } from '../backend';
+import type { UserProfile, CTScan, ScanId, PatientId, ExternalApiConfig } from '../backend';
 import { toast } from 'sonner';
 
 // User Profile Queries
@@ -117,41 +117,35 @@ export function useAnalyzeScan() {
 }
 
 // API Configuration Queries (Admin only)
-export function useGetApiConfig() {
-  const { actor, isFetching } = useActor();
+export function useGetExternalApiConfig() {
+  const { actor, isFetching: actorFetching } = useActor();
 
-  return useQuery<{ endpoint: ApiEndpoint; apiKey: ApiKey }>({
-    queryKey: ['apiConfig'],
+  return useQuery<ExternalApiConfig | null>({
+    queryKey: ['externalApiConfig'],
     queryFn: async () => {
-      if (!actor) return { endpoint: '', apiKey: '' };
+      if (!actor) throw new Error('Actor not available');
       try {
-        const [endpoint, apiKey] = await Promise.all([
-          actor.getApiEndpoint(),
-          actor.getApiKey(),
-        ]);
-        return { endpoint, apiKey };
+        return await actor.getExternalApiConfig();
       } catch {
-        return { endpoint: '', apiKey: '' };
+        return null;
       }
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
+    retry: false,
   });
 }
 
-export function useSaveApiConfig() {
+export function useConfigureExternalApi() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ endpoint, apiKey }: { endpoint: ApiEndpoint; apiKey: ApiKey }) => {
+    mutationFn: async (config: ExternalApiConfig) => {
       if (!actor) throw new Error('Actor not available');
-      await Promise.all([
-        actor.configureApiEndpoint(endpoint),
-        actor.configureApiKey(apiKey),
-      ]);
+      return actor.configureExternalApi(config);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['apiConfig'] });
+      queryClient.invalidateQueries({ queryKey: ['externalApiConfig'] });
       toast.success('API configuration saved successfully');
     },
     onError: (error: Error) => {
@@ -160,57 +154,26 @@ export function useSaveApiConfig() {
   });
 }
 
-// Deprecated: Use useGetApiConfig instead
-export function useGetApiEndpoint() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<ApiEndpoint>({
-    queryKey: ['apiEndpoint'],
-    queryFn: async () => {
-      if (!actor) return '';
-      try {
-        return await actor.getApiEndpoint();
-      } catch {
-        return '';
-      }
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-// Deprecated: Use useSaveApiConfig instead
-export function useConfigureApiEndpoint() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (endpoint: ApiEndpoint) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.configureApiEndpoint(endpoint);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['apiEndpoint'] });
-      toast.success('API endpoint configured successfully');
-    },
-    onError: (error: Error) => {
-      toast.error(`Failed to configure endpoint: ${error.message}`);
-    },
-  });
-}
-
 export function useIsCallerAdmin() {
-  const { actor, isFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
 
-  return useQuery<boolean>({
+  const query = useQuery<boolean>({
     queryKey: ['isAdmin'],
     queryFn: async () => {
-      if (!actor) return false;
+      if (!actor) throw new Error('Actor not available');
       try {
         return await actor.isCallerAdmin();
       } catch {
         return false;
       }
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
+    retry: false,
   });
+
+  return {
+    ...query,
+    isLoading: actorFetching || query.isLoading,
+    isFetched: !!actor && query.isFetched,
+  };
 }

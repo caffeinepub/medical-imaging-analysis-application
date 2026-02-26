@@ -1,72 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Restore API configuration changes from version 2",
+  "title": "API Configuration Dialog with Endpoint URL and API Key Inputs",
+  "projectName": "MediScan AI",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Restore and apply all backend changes from version 2, including the API configuration data model and logic in the main Motoko actor (API endpoint URL and API key storage, retrieval, and admin-only access control).",
-      "target": "backend",
+      "text": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "I need the changes in version 2 which includes API configuration"
+          "API Configuration Dialog",
+          "Modal Overlay: Semi-transparent black backdrop",
+          "Dialog Box: White, rounded corners, centered",
+          "Width: ~500px",
+          "Title: 'API Configuration' in bold",
+          "Two input fields with labels: 'API Endpoint URL' (text input), 'API Key' (password input with masking)",
+          "Buttons at bottom: Cancel (gray outline), Save (solid blue)"
         ]
       },
       "acceptanceCriteria": [
-        "The backend actor exposes functions to save and retrieve the external AI API endpoint URL and API key.",
-        "Only admin-role users can set or update the API configuration.",
-        "Non-admin users cannot access or modify API configuration values."
+        "Modal overlay is semi-transparent black and covers the full screen when the dialog is open.",
+        "Dialog box is centered, white, has rounded corners, and is approximately 500px wide.",
+        "Title reads 'API Configuration' in bold.",
+        "An 'API Endpoint URL' text input field is present with its label.",
+        "An 'API Key' password input field is present with its label and masks the entered characters.",
+        "A 'Cancel' button with gray outline styling closes the dialog without saving.",
+        "A 'Save' button with solid blue styling submits the configuration.",
+        "Inline validation errors are shown if endpoint URL or API key fields are empty or invalid.",
+        "The Save button shows a loading/disabled state while the save operation is in progress.",
+        "Previously saved values are pre-filled when the dialog is reopened.",
+        "The dialog is only accessible to admin users."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
-      "target": "frontend",
+      "text": "Ensure the existing backend API configuration storage (endpoint URL and API key) correctly persists values saved from the new dialog and returns them when queried, so the dialog can pre-fill saved values on open.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "I need the changes in version 2 which includes API configuration"
+          "API Endpoint URL: The full URL where your AI model API is hosted",
+          "API Key: Your authentication key from the AI service provider"
         ]
       },
       "acceptanceCriteria": [
-        "The Header displays an 'API Config' button visible only to admin users.",
-        "Clicking the 'API Config' button opens the ApiConfigDialog modal.",
-        "The ApiConfigDialog shows fields for the API endpoint URL and API key (password-masked).",
-        "Submitting the form with valid values saves the configuration to the backend.",
-        "Form validation prevents submission when required fields are empty.",
-        "The dialog is not visible or accessible to non-admin users."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "I need the changes in version 2 which includes API configuration"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The Footer displays only the medical disclaimer text stating AI analysis is for research and educational purposes.",
-        "No 'Made with Caffeine AI' text or attribution appears in the Footer."
+        "Saving an API endpoint URL and API key via the dialog persists those values in the backend.",
+        "Reopening the dialog pre-fills the previously saved endpoint URL and API key.",
+        "Only admin users can read or write the API configuration."
       ]
     }
   ],
   "constraints": [
-    "Do not reintroduce the 'Made with Caffeine AI' footer branding that was removed in version 3.",
-    "API configuration access must remain restricted to admin-role users only."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "API key must never be exposed in plain text in the UI; use password-masked input.",
+    "The dialog must only be accessible to confirmed admin users."
   ],
   "nonGoals": [
-    "Adding new features beyond what was present in version 2's API configuration scope.",
-    "Changing the overall application design or color theme."
+    "Adding new backend endpoints beyond what is needed for storing and retrieving API configuration.",
+    "Implementing actual CT scan analysis logic or calling the external AI API directly from the dialog.",
+    "Changing authentication or user profile management flows.",
+    "Supporting non-admin users accessing the API configuration dialog."
   ],
   "imageRequirements": {
     "required": [],

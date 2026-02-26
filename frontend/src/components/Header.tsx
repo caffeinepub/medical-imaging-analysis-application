@@ -14,13 +14,16 @@ interface HeaderProps {
 export default function Header({ userProfile }: HeaderProps) {
   const { clear } = useInternetIdentity();
   const queryClient = useQueryClient();
-  const { data: isAdmin } = useIsCallerAdmin();
+  const { data: isAdmin, isFetched: adminFetched } = useIsCallerAdmin();
   const [showApiConfig, setShowApiConfig] = useState(false);
 
   const handleLogout = async () => {
     await clear();
     queryClient.clear();
   };
+
+  // Only show the admin button once the admin check has fully resolved AND returned true
+  const showAdminButton = adminFetched && isAdmin === true;
 
   return (
     <>
@@ -43,10 +46,15 @@ export default function Header({ userProfile }: HeaderProps) {
                 <p className="text-xs text-muted-foreground">{userProfile.department}</p>
               </div>
             )}
-            {isAdmin && (
-              <Button variant="outline" size="sm" onClick={() => setShowApiConfig(true)}>
-                <Settings className="mr-2 h-4 w-4" />
-                API Config
+            {showAdminButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowApiConfig(true)}
+                className="flex items-center gap-2"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">API Config</span>
               </Button>
             )}
             <Button variant="ghost" size="sm" onClick={handleLogout}>
@@ -57,7 +65,7 @@ export default function Header({ userProfile }: HeaderProps) {
         </div>
       </header>
 
-      {isAdmin && <ApiConfigDialog open={showApiConfig} onOpenChange={setShowApiConfig} />}
+      {showAdminButton && <ApiConfigDialog open={showApiConfig} onOpenChange={setShowApiConfig} />}
     </>
   );
 }

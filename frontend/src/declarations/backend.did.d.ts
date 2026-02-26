@@ -10,14 +10,13 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export type ApiEndpoint = string;
-export type ApiKey = string;
 export interface CTScan {
   'id' : ScanId,
   'analysisResult' : [] | [TumorDetectionResult],
   'patientId' : PatientId,
   'scanImage' : Uint8Array,
 }
+export interface ExternalApiConfig { 'endpointUrl' : string, 'apiKey' : string }
 export type PatientId = string;
 export type ScanId = bigint;
 export interface TumorDetectionResult {
@@ -70,15 +69,14 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'analyzeScan' : ActorMethod<[ScanId], ScanId>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'configureApiEndpoint' : ActorMethod<[ApiEndpoint], undefined>,
-  'configureApiKey' : ActorMethod<[ApiKey], undefined>,
+  'configureExternalApi' : ActorMethod<[ExternalApiConfig], undefined>,
   'getAllScans' : ActorMethod<[], Array<CTScan>>,
-  'getApiEndpoint' : ActorMethod<[], ApiEndpoint>,
-  'getApiKey' : ActorMethod<[], ApiKey>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getExternalApiConfig' : ActorMethod<[], [] | [ExternalApiConfig]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getVersion' : ActorMethod<[], string>,
+  'isAdmin' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'readScan' : ActorMethod<[ScanId], CTScan>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,

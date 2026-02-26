@@ -1,4 +1,27 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-implement-an-api-configuration-modal-dialog-that-allows-admins-to-set-the-external-ai-api-endpoint-url-and-api-key-the-dialog-must-include-a-semi-transparent-black-modal-overlay-a-centered-white-dialog-box-with-rounded-corners-500px-wide-a-bold-api-configuration-title-a-labeled-text-input-for-api-endpoint-url-a-labeled-password-input-for-api-key-with-character-masking-a-cancel-button-with-a-gray-outline-style-and-a-save-button-with-a-solid-blue-style-the-dialog-should-display-inline-validation-errors-for-missing-invalid-fields-and-show-a-loading-state-while-saving",
+      "featureTitle": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+      "files": [
+        "frontend/src/components/ApiConfigDialog.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

@@ -1,26 +1,40 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-26T03:52:59.031Z",
-  "summary": "The diff shows backend changes to main.mo implementing API configuration storage and admin-only access control (REQ-1), and a project_state.json update. However, no frontend files were modified — the ApiConfigDialog component, Header 'API Config' button (REQ-2), and Footer component (REQ-3) are all missing from the diff.",
-  "missing_requirements": [
+  "generatedAt": "2026-02-26T04:46:01.537Z",
+  "summary": "The diff implements both REQ-1 (API Configuration modal dialog) and REQ-2 (backend persistence and pre-filling). The frontend ApiConfigDialog.tsx covers the modal overlay, centered white dialog ~500px wide, bold title, labeled text input for endpoint URL, password-masked API key input, gray-outline Cancel button, solid blue Save button, inline validation errors, loading state, and pre-filling from backend. The backend main.mo implements configureExternalApi and getExternalApiConfig with admin-only access control. The Header component shows the API Config button only to confirmed admin users. All major acceptance criteria appear to be addressed.",
+  "missing_requirements": [],
+  "hallucinated_features": [
     {
-      "id": "REQ-2",
-      "requirement": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
-      "reason": "No frontend files were added or modified in the diff. There is no evidence of an ApiConfigDialog component, no Header changes showing an 'API Config' button, and no frontend form validation or password-masked key input.",
-      "evidence": []
+      "description": "A migration module (backend/migration.mo) that converts old separate apiEndpoint/apiKey fields into a unified ExternalApiConfig object during canister upgrade.",
+      "reason": "The build request does not mention implementing a data migration module or upgrading from an old schema. Migration logic was not requested.",
+      "evidence": [
+        "backend/migration.mo"
+      ]
     },
     {
-      "id": "REQ-3",
-      "requirement": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution.",
-      "reason": "No Footer component file was added or modified in the diff. There is no evidence that the Footer was updated or verified to exclude 'Made with Caffeine AI' branding.",
-      "evidence": []
+      "description": "Clicking the semi-transparent backdrop closes the dialog when not saving.",
+      "reason": "The spec does not mention that clicking the overlay should close the dialog; it only specifies a Cancel button with gray outline styling that closes the dialog without saving.",
+      "evidence": [
+        "frontend/src/components/ApiConfigDialog.tsx"
+      ]
+    },
+    {
+      "description": "URL format validation for the API Endpoint URL field requiring a valid URL format.",
+      "reason": "The spec requires inline validation errors for missing/invalid fields but does not explicitly specify URL format validation beyond requiring a non-empty value.",
+      "evidence": [
+        "frontend/src/components/ApiConfigDialog.tsx"
+      ]
     }
   ],
-  "hallucinated_features": [],
-  "confidence": 0.9,
+  "confidence": 0.78,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/ApiConfigDialog.tsx",
+    "frontend/src/components/ScanDetailDialog.tsx",
+    "frontend/src/hooks/useQueries.ts",
     "project_state.json"
   ]
 }

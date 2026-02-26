@@ -1,49 +1,39 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Restore API configuration changes from version 2",
+  "title": "API Configuration Dialog with Endpoint URL and API Key Inputs",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Restore and apply all frontend changes from version 2, including the ApiConfigDialog component (admin-only dialog for viewing and saving the external AI API endpoint URL and API key with password-masked key input and form validation) and the Header's admin-only 'API Config' button that opens it.",
+      "id": "REQ-1",
+      "summary": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key with proper validation, loading states, and pre-filled values",
       "acceptanceCriteria": [
-        "The Header displays an 'API Config' button visible only to admin users.",
-        "Clicking the 'API Config' button opens the ApiConfigDialog modal.",
-        "The ApiConfigDialog shows fields for the API endpoint URL and API key (password-masked).",
-        "Submitting the form with valid values saves the configuration to the backend.",
-        "Form validation prevents submission when required fields are empty.",
-        "The dialog is not visible or accessible to non-admin users."
+        "Modal overlay is semi-transparent black and covers the full screen when the dialog is open.",
+        "Dialog box is centered, white, has rounded corners, and is approximately 500px wide.",
+        "Title reads 'API Configuration' in bold.",
+        "An 'API Endpoint URL' text input field is present with its label.",
+        "An 'API Key' password input field is present with its label and masks the entered characters.",
+        "A 'Cancel' button with gray outline styling closes the dialog without saving.",
+        "A 'Save' button with solid blue styling submits the configuration.",
+        "Inline validation errors are shown if endpoint URL or API key fields are empty or invalid.",
+        "The Save button shows a loading/disabled state while the save operation is in progress.",
+        "Previously saved values are pre-filled when the dialog is reopened.",
+        "The dialog is only accessible to admin users."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/ApiConfigDialog.tsx",
           "operation": "modify",
-          "description": "Verify and ensure the ApiConfigDialog component provides a modal form for admin users to view and save the external AI API endpoint URL and API key. The API key input must be password-masked. Include form validation to prevent submission when required fields are empty. The component should use the useGetApiEndpoint, useGetApiKey, useConfigureApiEndpoint, and useConfigureApiKey hooks from useQueries.ts to fetch and save configuration values. Verify the authorization component's usage instructions before implementing to ensure proper admin-only access."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Add an admin-only 'API Config' button to the Header component that opens the ApiConfigDialog modal. The button should only be visible when the current user has admin role (use useIsCallerAdmin hook). Wire the button click handler to open the ApiConfigDialog state. Verify the authorization component's usage instructions before implementing to ensure proper role checking."
+          "description": "Update the API Configuration dialog component to match the exact BuildRequest specifications: ensure the modal overlay is semi-transparent black covering the full screen; style the dialog box as white with rounded corners and ~500px width; display 'API Configuration' as a bold title; include labeled text input for 'API Endpoint URL' and a password-masked input for 'API Key'; add 'Cancel' button with gray outline styling and 'Save' button with solid blue styling at the bottom; implement inline validation errors for missing/invalid fields (empty endpoint URL or API key); show loading/disabled state on the Save button during save operation; pre-fill the endpoint URL and API key fields with previously saved values from the backend when the dialog opens; ensure the dialog is only accessible to admin users by verifying the admin status before rendering. Use the authorization component to enforce admin-only access. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Ensure the useGetApiEndpoint, useGetApiKey, useConfigureApiEndpoint, and useConfigureApiKey hooks are present and properly implemented. These hooks should call the backend methods getApiEndpoint(), getApiKey(), configureApiEndpoint(endpoint), and configureApiKey(key) respectively. Add the useIsCallerAdmin hook if not present, calling isCallerAdmin() from the backend. Include proper error handling and success toast notifications for mutations."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure the Footer component retains the medical disclaimer text only, without any 'Made with Caffeine AI' branding attribution (as established in version 3).",
-      "acceptanceCriteria": [
-        "The Footer displays only the medical disclaimer text stating AI analysis is for research and educational purposes.",
-        "No 'Made with Caffeine AI' text or attribution appears in the Footer."
-      ],
-      "file_operations": [
+          "description": "Review and ensure the existing hooks `useGetExternalApiConfig` and `useConfigureExternalApi` properly handle fetching the current API configuration (endpoint URL and API key) and saving new configuration values. Confirm that `useGetExternalApiConfig` returns the saved configuration (or null) for pre-filling the dialog fields, and that `useConfigureExternalApi` correctly submits the configuration to the backend. Add proper error handling for authorization failures. Verify the authorization component's usage instructions for error handling patterns."
+        },
         {
-          "path": "frontend/src/components/Footer.tsx",
+          "path": "frontend/src/components/Header.tsx",
           "operation": "modify",
-          "description": "Review and confirm the Footer component displays only the medical disclaimer text ('This AI analysis tool is designed for research and educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment.') without any 'Made with Caffeine AI' branding or attribution. Remove any such branding if present."
+          "description": "Review the existing API Config button in the Header component to ensure it only renders for admin users after the admin check fully resolves. Confirm that the button triggers the ApiConfigDialog to open when clicked. Ensure the admin check uses the authorization component's `isCallerAdmin` capability. No changes needed if already correct; otherwise update to match the requirement that only admins can access the dialog."
         }
       ]
     }

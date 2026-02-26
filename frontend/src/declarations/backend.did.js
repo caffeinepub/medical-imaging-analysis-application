@@ -25,8 +25,10 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const ApiEndpoint = IDL.Text;
-export const ApiKey = IDL.Text;
+export const ExternalApiConfig = IDL.Record({
+  'endpointUrl' : IDL.Text,
+  'apiKey' : IDL.Text,
+});
 export const TumorStage = IDL.Variant({
   'stage0' : IDL.Null,
   'stage1' : IDL.Null,
@@ -84,19 +86,22 @@ export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'analyzeScan' : IDL.Func([ScanId], [ScanId], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'configureApiEndpoint' : IDL.Func([ApiEndpoint], [], []),
-  'configureApiKey' : IDL.Func([ApiKey], [], []),
+  'configureExternalApi' : IDL.Func([ExternalApiConfig], [], []),
   'getAllScans' : IDL.Func([], [IDL.Vec(CTScan)], ['query']),
-  'getApiEndpoint' : IDL.Func([], [ApiEndpoint], ['query']),
-  'getApiKey' : IDL.Func([], [ApiKey], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getExternalApiConfig' : IDL.Func(
+      [],
+      [IDL.Opt(ExternalApiConfig)],
+      ['query'],
+    ),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
   'getVersion' : IDL.Func([], [IDL.Text], ['query']),
+  'isAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'readScan' : IDL.Func([ScanId], [CTScan], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
@@ -123,8 +128,10 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const ApiEndpoint = IDL.Text;
-  const ApiKey = IDL.Text;
+  const ExternalApiConfig = IDL.Record({
+    'endpointUrl' : IDL.Text,
+    'apiKey' : IDL.Text,
+  });
   const TumorStage = IDL.Variant({
     'stage0' : IDL.Null,
     'stage1' : IDL.Null,
@@ -182,19 +189,22 @@ export const idlFactory = ({ IDL }) => {
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'analyzeScan' : IDL.Func([ScanId], [ScanId], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'configureApiEndpoint' : IDL.Func([ApiEndpoint], [], []),
-    'configureApiKey' : IDL.Func([ApiKey], [], []),
+    'configureExternalApi' : IDL.Func([ExternalApiConfig], [], []),
     'getAllScans' : IDL.Func([], [IDL.Vec(CTScan)], ['query']),
-    'getApiEndpoint' : IDL.Func([], [ApiEndpoint], ['query']),
-    'getApiKey' : IDL.Func([], [ApiKey], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getExternalApiConfig' : IDL.Func(
+        [],
+        [IDL.Opt(ExternalApiConfig)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
     'getVersion' : IDL.Func([], [IDL.Text], ['query']),
+    'isAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'readScan' : IDL.Func([ScanId], [CTScan], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),

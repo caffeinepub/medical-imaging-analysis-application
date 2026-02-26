@@ -10,12 +10,13 @@ import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import OutCall "http-outcalls/outcall";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
-  // User Profile Type
   public type UserProfile = {
     name : Text;
     department : Text;
@@ -79,11 +80,15 @@ actor {
     };
   };
 
+  type ExternalApiConfig = {
+    endpointUrl : Text;
+    apiKey : Text;
+  };
+
   let version = "1.0.0";
   var nextScanId = 0;
-  var apiEndpoint : ApiEndpoint = "";
-  var apiKey : ApiKey = "";
   let ctScans = Map.empty<ScanId, CTScan>();
+  var externalApiConfig : ?ExternalApiConfig = null;
 
   include MixinStorage();
 
@@ -108,36 +113,22 @@ actor {
     scanId;
   };
 
-  public shared ({ caller }) func configureApiEndpoint(endpoint : ApiEndpoint) : async () {
+  public shared ({ caller }) func configureExternalApi(config : ExternalApiConfig) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can configure API endpoint");
     };
 
-    if (endpoint.isEmpty()) { Runtime.trap("Invalid endpoint supplied") };
-    apiEndpoint := endpoint;
+    if (config.endpointUrl.isEmpty()) { Runtime.trap("Invalid endpoint supplied") };
+    if (config.apiKey.isEmpty()) { Runtime.trap("Invalid API key supplied") };
+
+    externalApiConfig := ?config;
   };
 
-  public shared ({ caller }) func configureApiKey(key : ApiKey) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can configure API key");
-    };
-
-    if (key.isEmpty()) { Runtime.trap("Invalid API key supplied") };
-    apiKey := key;
-  };
-
-  public query ({ caller }) func getApiEndpoint() : async ApiEndpoint {
+  public query ({ caller }) func getExternalApiConfig() : async ?ExternalApiConfig {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view API endpoint");
     };
-    apiEndpoint;
-  };
-
-  public query ({ caller }) func getApiKey() : async ApiKey {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can view API key");
-    };
-    apiKey;
+    externalApiConfig;
   };
 
   public query ({ caller }) func readScan(scanId : ScanId) : async CTScan {
@@ -164,8 +155,12 @@ actor {
       Runtime.trap("Unauthorized: Only users can analyze CT scans");
     };
 
-    if (apiEndpoint.isEmpty()) { Runtime.trap("API endpoint not configured") };
-    if (apiKey.isEmpty()) { Runtime.trap("API key not configured") };
+    let config = switch (externalApiConfig) {
+      case (null) { Runtime.trap("API endpoint not configured") };
+      case (?config) { config };
+    };
+    if (config.endpointUrl.isEmpty()) { Runtime.trap("API endpoint not configured") };
+    if (config.apiKey.isEmpty()) { Runtime.trap("API key not configured") };
 
     switch (ctScans.get(scanId)) {
       case (null) { Runtime.trap("ScanId not found") };
@@ -192,4 +187,9 @@ actor {
   public query ({ caller }) func getVersion() : async Text {
     version;
   };
+
+  public query ({ caller }) func isAdmin() : async Bool {
+    AccessControl.isAdmin(accessControlState, caller);
+  };
 };
+

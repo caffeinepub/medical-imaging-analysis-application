@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useAnalyzeScan, useGetApiConfig } from '../hooks/useQueries';
+import { useAnalyzeScan, useGetExternalApiConfig } from '../hooks/useQueries';
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ const stageColors: Record<TumorStage, string> = {
 
 export default function ScanDetailDialog({ scan, open, onOpenChange }: ScanDetailDialogProps) {
   const analyzeScan = useAnalyzeScan();
-  const { data: apiConfig } = useGetApiConfig();
+  const { data: apiConfig } = useGetExternalApiConfig();
   const [activeTab, setActiveTab] = useState('original');
 
   const originalImageUrl = useMemo(() => {
@@ -53,7 +53,7 @@ export default function ScanDetailDialog({ scan, open, onOpenChange }: ScanDetai
     return URL.createObjectURL(blob);
   }, [scan.analysisResult]);
 
-  const isApiConfigured = apiConfig?.endpoint && apiConfig?.apiKey;
+  const isApiConfigured = apiConfig?.endpointUrl && apiConfig?.apiKey;
 
   const handleAnalyze = () => {
     if (!isApiConfigured) {
