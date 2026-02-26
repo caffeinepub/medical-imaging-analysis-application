@@ -162,9 +162,18 @@ export function useIsCallerAdmin() {
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
       try {
-        return await actor.isCallerAdmin();
+        // Try isCallerAdmin first (from MixinAuthorization), fall back to isAdmin
+        if (typeof (actor as any).isCallerAdmin === 'function') {
+          return await actor.isCallerAdmin();
+        }
+        return await actor.isAdmin();
       } catch {
-        return false;
+        // If isCallerAdmin fails (e.g. not admin), try isAdmin
+        try {
+          return await actor.isAdmin();
+        } catch {
+          return false;
+        }
       }
     },
     enabled: !!actor && !actorFetching,

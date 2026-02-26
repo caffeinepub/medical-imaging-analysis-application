@@ -1,7 +1,7 @@
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Activity, LogOut, Settings } from 'lucide-react';
+import { Activity, LogOut, Settings, Loader2 } from 'lucide-react';
 import type { UserProfile } from '../backend';
 import { useState } from 'react';
 import ApiConfigDialog from './ApiConfigDialog';
@@ -14,7 +14,7 @@ interface HeaderProps {
 export default function Header({ userProfile }: HeaderProps) {
   const { clear } = useInternetIdentity();
   const queryClient = useQueryClient();
-  const { data: isAdmin, isFetched: adminFetched } = useIsCallerAdmin();
+  const { data: isAdmin, isFetched: adminFetched, isLoading: adminLoading } = useIsCallerAdmin();
   const [showApiConfig, setShowApiConfig] = useState(false);
 
   const handleLogout = async () => {
@@ -22,7 +22,7 @@ export default function Header({ userProfile }: HeaderProps) {
     queryClient.clear();
   };
 
-  // Only show the admin button once the admin check has fully resolved AND returned true
+  // Show the admin button once the admin check has fully resolved AND returned true
   const showAdminButton = adminFetched && isAdmin === true;
 
   return (
@@ -46,17 +46,28 @@ export default function Header({ userProfile }: HeaderProps) {
                 <p className="text-xs text-muted-foreground">{userProfile.department}</p>
               </div>
             )}
+
+            {/* Show loading spinner while checking admin status */}
+            {adminLoading && (
+              <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <span className="hidden sm:inline">Checking permissions…</span>
+              </div>
+            )}
+
+            {/* API Config button — visible only to admins */}
             {showAdminButton && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowApiConfig(true)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-medical-primary/40 text-medical-primary hover:bg-medical-primary/10 hover:text-medical-primary"
               >
                 <Settings className="h-4 w-4" />
                 <span className="hidden sm:inline">API Config</span>
               </Button>
             )}
+
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Logout
@@ -65,7 +76,10 @@ export default function Header({ userProfile }: HeaderProps) {
         </div>
       </header>
 
-      {showAdminButton && <ApiConfigDialog open={showApiConfig} onOpenChange={setShowApiConfig} />}
+      {/* Always mount the dialog when admin; control visibility via open prop */}
+      {showAdminButton && (
+        <ApiConfigDialog open={showApiConfig} onOpenChange={setShowApiConfig} />
+      )}
     </>
   );
 }

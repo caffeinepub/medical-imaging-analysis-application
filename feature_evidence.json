@@ -2,8 +2,30 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-implement-an-api-configuration-modal-dialog-that-allows-admins-to-set-the-external-ai-api-endpoint-url-and-api-key-the-dialog-must-include-a-semi-transparent-black-modal-overlay-a-centered-white-dialog-box-with-rounded-corners-500px-wide-a-bold-api-configuration-title-a-labeled-text-input-for-api-endpoint-url-a-labeled-password-input-for-api-key-with-character-masking-a-cancel-button-with-a-gray-outline-style-and-a-save-button-with-a-solid-blue-style-the-dialog-should-display-inline-validation-errors-for-missing-invalid-fields-and-show-a-loading-state-while-saving",
-      "featureTitle": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+      "featureId": "feature-ensure-the-api-configuration-modal-dialog-is-visible-and-accessible-in-the-ui-the-header-component-must-render-the-api-config-button-for-admin-users-and-clicking-it-must-open-the-apiconfigdialog-modal",
+      "featureTitle": "Ensure the API Configuration modal dialog is visible and accessible in the UI. The Header component must render the 'API Config' button for admin users, and clicking it must open the ApiConfigDialog modal.",
+      "files": [
+        "frontend/src/components/ApiConfigDialog.tsx",
+        "frontend/src/components/Header.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-the-api-configuration-dialog-must-contain-a-bold-api-configuration-title-an-api-endpoint-url-text-input-field-an-api-key-password-input-field-with-character-masking-a-gray-outlined-cancel-button-and-a-solid-blue-save-button-pre-fill-the-fields-with-any-existing-values-loaded-from-the-backend",
+      "featureTitle": "The API Configuration dialog must contain: a bold 'API Configuration' title, an 'API Endpoint URL' text input field, an 'API Key' password input field with character masking, a gray outlined 'Cancel' button, and a solid blue 'Save' button. Pre-fill the fields with any existing values loaded from the backend.",
       "files": [
         "frontend/src/components/ApiConfigDialog.tsx",
         "frontend/src/hooks/useQueries.ts"
@@ -19,7 +41,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-2"
       ],
       "confidence": "high"
     }

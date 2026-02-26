@@ -1,23 +1,35 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-26T04:46:01.539Z",
+  "generatedAt": "2026-02-26T04:59:30.967Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+        "summary": "Ensure the API Configuration modal dialog is visible and accessible in the UI. The Header component must render the 'API Config' button for admin users, and clicking it must open the ApiConfigDialog modal.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/ApiConfigDialog.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/ApiConfigDialog.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "The API Configuration dialog must contain: a bold 'API Configuration' title, an 'API Endpoint URL' text input field, an 'API Key' password input field with character masking, a gray outlined 'Cancel' button, and a solid blue 'Save' button. Pre-fill the fields with any existing values loaded from the backend.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/ApiConfigDialog.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/Header.tsx"
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
           "frontend/src/components/ApiConfigDialog.tsx",
@@ -25,8 +37,8 @@
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Ensure the existing backend API configuration storage (endpoint URL and API key) correctly persists values saved from the new dialog and returns them when queried, so the dialog can pre-fill saved values on open.",
+        "id": "REQ-3",
+        "summary": "Ensure the backend actor exposes a stable API configuration endpoint that accepts and persists an API endpoint URL and API key, and returns them when queried. Verify the external API config getter and setter functions are correctly defined in main.mo and that the migration module handles the combined ExternalApiConfig record shape.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
@@ -40,12 +52,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
     "frontend/src/components/ApiConfigDialog.tsx",
-    "frontend/src/components/ScanDetailDialog.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
+    "frontend/src/components/Header.tsx",
     "frontend/src/hooks/useQueries.ts",
     "project_state.json",
     "scratch/component-selection.json",

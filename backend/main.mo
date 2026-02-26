@@ -9,8 +9,9 @@ import Text "mo:core/Text";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
-import OutCall "http-outcalls/outcall";
 import Migration "migration";
+import OutCall "http-outcalls/outcall";
+import Nat "mo:core/Nat";
 
 (with migration = Migration.run)
 actor {
@@ -192,4 +193,3 @@ actor {
     AccessControl.isAdmin(accessControlState, caller);
   };
 };
-

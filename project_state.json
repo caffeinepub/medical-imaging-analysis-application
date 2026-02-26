@@ -1,22 +1,29 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "CT scan analysis application with AI-powered tumor detection, deployed on Internet Computer. Includes API configuration for connecting to external AI model endpoints.",
+  "summary": "CT scan analysis application with AI-powered tumor detection. Users need to configure an external AI API endpoint and key to receive analysis reports with tumor coordinates and stage information.",
   "architectural_notes": [
-    "Deployed on Internet Computer (ICP) platform",
-    "Connects to external AI model API for CT scan analysis",
-    "API returns JSON with tumor coordinates and stage information",
-    "CT scan images sent as base64 or multipart form data",
-    "CORS must be enabled on AI API for ICP domain requests"
+    "App connects to an external AI API for CT scan analysis; API must accept image uploads and return JSON with tumor coordinates and stage info",
+    "CORS must be enabled on the external AI API to allow requests from the Internet Computer domain"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "API Configuration dialog (endpoint URL + API key input) is missing from the UI — users cannot currently configure their AI service connection"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-implement-an-api-configuration-modal-dialog-that-allows-admins-to-set-the-external-ai-api-endpoint-url-and-api-key-the-dialog-must-include-a-semi-transparent-black-modal-overlay-a-centered-white-dialog-box-with-rounded-corners-500px-wide-a-bold-api-configuration-title-a-labeled-text-input-for-api-endpoint-url-a-labeled-password-input-for-api-key-with-character-masking-a-cancel-button-with-a-gray-outline-style-and-a-save-button-with-a-solid-blue-style-the-dialog-should-display-inline-validation-errors-for-missing-invalid-fields-and-show-a-loading-state-while-saving",
-      "title": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+      "id": "feature-ensure-the-api-configuration-modal-dialog-is-visible-and-accessible-in-the-ui-the-header-component-must-render-the-api-config-button-for-admin-users-and-clicking-it-must-open-the-apiconfigdialog-modal",
+      "title": "Ensure the API Configuration modal dialog is visible and accessible in the UI. The Header component must render the 'API Config' button for admin users, and clicking it must open the ApiConfigDialog modal.",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-the-api-configuration-dialog-must-contain-a-bold-api-configuration-title-an-api-endpoint-url-text-input-field-an-api-key-password-input-field-with-character-masking-a-gray-outlined-cancel-button-and-a-solid-blue-save-button-pre-fill-the-fields-with-any-existing-values-loaded-from-the-backend",
+      "title": "The API Configuration dialog must contain: a bold 'API Configuration' title, an 'API Endpoint URL' text input field, an 'API Key' password input field with character masking, a gray outlined 'Cancel' button, and a solid blue 'Save' button. Pre-fill the fields with any existing values loaded from the backend.",
+      "reqIds": [
+        "REQ-2"
       ],
       "version": 1
     }
@@ -24,15 +31,15 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "API Configuration dialog with endpoint URL and API key inputs",
+      "summary": "API Configuration dialog modal with fields for API Endpoint URL and API Key (password masked), plus Cancel and Save buttons, so users can connect to their external AI analysis service",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-3",
-      "summary": "Ensure the existing backend API configuration storage (endpoint URL and API key) correctly persists values saved from the new dialog and returns them when queried, so the dialog can pre-fill saved values on open.",
+      "id": "AR-4",
+      "summary": "Ensure the backend actor exposes a stable API configuration endpoint that accepts and persists an API endpoint URL and API key, and returns them when queried. Verify the external API config getter and setter functions are correctly defined in main.mo and that the migration module handles the combined ExternalApiConfig record shape.",
       "reqIds": [
-        "REQ-2"
+        "REQ-3"
       ],
       "status": "pending"
     }

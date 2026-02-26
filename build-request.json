@@ -1,48 +1,59 @@
 {
   "kind": "build_request",
-  "title": "API Configuration Dialog with Endpoint URL and API Key Inputs",
+  "title": "Fix missing API Configuration dialog for CT scan analysis",
   "projectName": "MediScan AI",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key. The dialog must include: a semi-transparent black modal overlay; a centered white dialog box with rounded corners (~500px wide); a bold 'API Configuration' title; a labeled text input for 'API Endpoint URL'; a labeled password input for 'API Key' with character masking; a 'Cancel' button with a gray outline style; and a 'Save' button with a solid blue style. The dialog should display inline validation errors for missing/invalid fields and show a loading state while saving.",
+      "text": "Ensure the API Configuration modal dialog is visible and accessible in the UI. The Header component must render the 'API Config' button for admin users, and clicking it must open the ApiConfigDialog modal.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5"
         ],
         "quotes": [
-          "API Configuration Dialog",
-          "Modal Overlay: Semi-transparent black backdrop",
-          "Dialog Box: White, rounded corners, centered",
-          "Width: ~500px",
+          "this feature is missing where I input my API end point url and API key to get my analysis report"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin users see an 'API Config' button in the header after logging in",
+        "Clicking the button opens the API Configuration modal dialog",
+        "The modal renders with a semi-transparent black backdrop overlay",
+        "The dialog box is white, rounded, centered, approximately 500px wide"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "The API Configuration dialog must contain: a bold 'API Configuration' title, an 'API Endpoint URL' text input field, an 'API Key' password input field with character masking, a gray outlined 'Cancel' button, and a solid blue 'Save' button. Pre-fill the fields with any existing values loaded from the backend.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
           "Title: 'API Configuration' in bold",
           "Two input fields with labels: 'API Endpoint URL' (text input), 'API Key' (password input with masking)",
           "Buttons at bottom: Cancel (gray outline), Save (solid blue)"
         ]
       },
       "acceptanceCriteria": [
-        "Modal overlay is semi-transparent black and covers the full screen when the dialog is open.",
-        "Dialog box is centered, white, has rounded corners, and is approximately 500px wide.",
-        "Title reads 'API Configuration' in bold.",
-        "An 'API Endpoint URL' text input field is present with its label.",
-        "An 'API Key' password input field is present with its label and masks the entered characters.",
-        "A 'Cancel' button with gray outline styling closes the dialog without saving.",
-        "A 'Save' button with solid blue styling submits the configuration.",
-        "Inline validation errors are shown if endpoint URL or API key fields are empty or invalid.",
-        "The Save button shows a loading/disabled state while the save operation is in progress.",
-        "Previously saved values are pre-filled when the dialog is reopened.",
-        "The dialog is only accessible to admin users."
+        "Dialog title reads 'API Configuration' in bold",
+        "An 'API Endpoint URL' labeled text input is present",
+        "An 'API Key' labeled password input is present with characters masked",
+        "Existing saved endpoint URL and API key are pre-filled when the dialog opens",
+        "Cancel button has a gray outline style and closes the dialog without saving",
+        "Save button has a solid blue style and persists the values to the backend",
+        "Inline validation shows an error if the endpoint URL is empty or malformed before saving"
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Ensure the existing backend API configuration storage (endpoint URL and API key) correctly persists values saved from the new dialog and returns them when queried, so the dialog can pre-fill saved values on open.",
+      "id": "REQ-3",
+      "text": "Ensure the backend actor exposes a stable API configuration endpoint that accepts and persists an API endpoint URL and API key, and returns them when queried. Verify the external API config getter and setter functions are correctly defined in main.mo and that the migration module handles the combined ExternalApiConfig record shape.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5"
         ],
         "quotes": [
           "API Endpoint URL: The full URL where your AI model API is hosted",
@@ -50,22 +61,23 @@
         ]
       },
       "acceptanceCriteria": [
-        "Saving an API endpoint URL and API key via the dialog persists those values in the backend.",
-        "Reopening the dialog pre-fills the previously saved endpoint URL and API key.",
-        "Only admin users can read or write the API configuration."
+        "Backend exposes a query to retrieve the current ExternalApiConfig (endpoint URL + API key)",
+        "Backend exposes an update function to save a new ExternalApiConfig",
+        "Only admin-role users can set the API configuration",
+        "Migration module correctly maps old separate apiEndpoint/apiKey fields into the combined ExternalApiConfig record"
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
-    "API key must never be exposed in plain text in the UI; use password-masked input.",
-    "The dialog must only be accessible to confirmed admin users."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "All Motoko logic must remain in the single main actor (backend/main.mo)",
+    "API key must be stored only in the backend, never in localStorage or frontend state beyond the current session"
   ],
   "nonGoals": [
-    "Adding new backend endpoints beyond what is needed for storing and retrieving API configuration.",
-    "Implementing actual CT scan analysis logic or calling the external AI API directly from the dialog.",
-    "Changing authentication or user profile management flows.",
-    "Supporting non-admin users accessing the API configuration dialog."
+    "Adding new AI analysis logic or changing how CT scans are processed",
+    "Supporting multiple API configurations or per-user API keys",
+    "Implementing CORS proxy or any server-side request forwarding",
+    "Changing the authentication mechanism (Internet Identity remains the only auth method)"
   ],
   "imageRequirements": {
     "required": [],

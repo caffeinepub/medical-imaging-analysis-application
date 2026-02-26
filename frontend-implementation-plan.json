@@ -1,39 +1,52 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "API Configuration Dialog with Endpoint URL and API Key Inputs",
+  "title": "Fix missing API Configuration dialog for CT scan analysis",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Implement an API Configuration modal dialog that allows admins to set the external AI API endpoint URL and API key with proper validation, loading states, and pre-filled values",
+      "summary": "Ensure the API Configuration modal dialog is visible and accessible in the UI",
       "acceptanceCriteria": [
-        "Modal overlay is semi-transparent black and covers the full screen when the dialog is open.",
-        "Dialog box is centered, white, has rounded corners, and is approximately 500px wide.",
-        "Title reads 'API Configuration' in bold.",
-        "An 'API Endpoint URL' text input field is present with its label.",
-        "An 'API Key' password input field is present with its label and masks the entered characters.",
-        "A 'Cancel' button with gray outline styling closes the dialog without saving.",
-        "A 'Save' button with solid blue styling submits the configuration.",
-        "Inline validation errors are shown if endpoint URL or API key fields are empty or invalid.",
-        "The Save button shows a loading/disabled state while the save operation is in progress.",
-        "Previously saved values are pre-filled when the dialog is reopened.",
-        "The dialog is only accessible to admin users."
+        "Admin users see an 'API Config' button in the header after logging in",
+        "Clicking the button opens the API Configuration modal dialog",
+        "The modal renders with a semi-transparent black backdrop overlay",
+        "The dialog box is white, rounded, centered, approximately 500px wide"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Verify that the Header component correctly renders the 'API Config' button for admin users and that clicking it opens the ApiConfigDialog modal. Ensure the button is visible and properly wired to toggle the dialog state. The authorization component is used to check admin role status via useQueries hooks."
+        },
+        {
+          "path": "frontend/src/components/ApiConfigDialog.tsx",
+          "operation": "modify",
+          "description": "Verify that the ApiConfigDialog modal renders correctly with a semi-transparent black backdrop overlay, a white rounded dialog box centered on screen at approximately 500px width, and that the open/close state is properly controlled by the parent Header component."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "The API Configuration dialog must contain proper form fields, validation, and pre-filled values",
+      "acceptanceCriteria": [
+        "Dialog title reads 'API Configuration' in bold",
+        "An 'API Endpoint URL' labeled text input is present",
+        "An 'API Key' labeled password input is present with characters masked",
+        "Existing saved endpoint URL and API key are pre-filled when the dialog opens",
+        "Cancel button has a gray outline style and closes the dialog without saving",
+        "Save button has a solid blue style and persists the values to the backend",
+        "Inline validation shows an error if the endpoint URL is empty or malformed before saving"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/ApiConfigDialog.tsx",
           "operation": "modify",
-          "description": "Update the API Configuration dialog component to match the exact BuildRequest specifications: ensure the modal overlay is semi-transparent black covering the full screen; style the dialog box as white with rounded corners and ~500px width; display 'API Configuration' as a bold title; include labeled text input for 'API Endpoint URL' and a password-masked input for 'API Key'; add 'Cancel' button with gray outline styling and 'Save' button with solid blue styling at the bottom; implement inline validation errors for missing/invalid fields (empty endpoint URL or API key); show loading/disabled state on the Save button during save operation; pre-fill the endpoint URL and API key fields with previously saved values from the backend when the dialog opens; ensure the dialog is only accessible to admin users by verifying the admin status before rendering. Use the authorization component to enforce admin-only access. Verify the component's usage instructions before implementing."
+          "description": "Verify that the dialog contains a bold 'API Configuration' title, an 'API Endpoint URL' text input field, an 'API Key' password input field with character masking, a gray outlined 'Cancel' button, and a solid blue 'Save' button. Ensure existing values from the backend are pre-filled using the useGetExternalApiConfig hook. Verify inline validation shows errors for empty or malformed endpoint URLs before saving. Verify the Cancel button closes the dialog without saving and the Save button persists values via the useConfigureExternalApi mutation."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Review and ensure the existing hooks `useGetExternalApiConfig` and `useConfigureExternalApi` properly handle fetching the current API configuration (endpoint URL and API key) and saving new configuration values. Confirm that `useGetExternalApiConfig` returns the saved configuration (or null) for pre-filling the dialog fields, and that `useConfigureExternalApi` correctly submits the configuration to the backend. Add proper error handling for authorization failures. Verify the authorization component's usage instructions for error handling patterns."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Review the existing API Config button in the Header component to ensure it only renders for admin users after the admin check fully resolves. Confirm that the button triggers the ApiConfigDialog to open when clicked. Ensure the admin check uses the authorization component's `isCallerAdmin` capability. No changes needed if already correct; otherwise update to match the requirement that only admins can access the dialog."
+          "description": "Verify that useGetExternalApiConfig and useConfigureExternalApi hooks are properly implemented and working. Ensure useGetExternalApiConfig fetches the current ExternalApiConfig from the backend and useConfigureExternalApi mutation saves the new config. Verify proper error handling and success toast notifications are in place."
         }
       ]
     }

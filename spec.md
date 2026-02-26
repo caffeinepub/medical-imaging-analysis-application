@@ -1,15 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Add an API Configuration modal dialog for admins to set and persist an external AI API endpoint URL and API key.
+**Goal:** Fix the missing API Configuration dialog in MediScan AI so admin users can input and save their AI service endpoint URL and API key.
 
 **Planned changes:**
-- Add a modal dialog with a semi-transparent black overlay and a centered white dialog box (~500px wide) titled "API Configuration" in bold
-- Include a labeled text input for "API Endpoint URL" and a labeled password input for "API Key" with character masking
-- Add a "Cancel" button (gray outline) and a "Save" button (solid blue) with a loading/disabled state during save
-- Show inline validation errors for empty or invalid fields
-- Pre-fill previously saved values when the dialog is reopened
-- Restrict dialog access to admin users only
-- Ensure the backend correctly persists and returns the API endpoint URL and API key for pre-filling
+- Add an "API Config" button in the Header component, visible only to admin users after login
+- Clicking the button opens an ApiConfigDialog modal with a semi-transparent backdrop, centered white rounded dialog (~500px wide)
+- Dialog includes a bold "API Configuration" title, an "API Endpoint URL" text input, an "API Key" password input (masked), a gray outlined "Cancel" button, and a solid blue "Save" button
+- Pre-fill dialog fields with existing values loaded from the backend
+- Add inline validation on the endpoint URL field before saving
+- Ensure the backend exposes a query to retrieve the current ExternalApiConfig (endpoint URL + API key) and an admin-only update function to save it
+- Fix the migration module to correctly map old separate apiEndpoint/apiKey fields into the combined ExternalApiConfig record
 
-**User-visible outcome:** Admin users can open the API Configuration dialog, enter or update the AI API endpoint URL and API key, save the configuration, and see pre-filled values when reopening the dialog.
+**User-visible outcome:** Admin users see an "API Config" button in the header, can open the configuration dialog, enter or update their AI service endpoint URL and API key, and save them — enabling CT scan analysis reports to be generated.
